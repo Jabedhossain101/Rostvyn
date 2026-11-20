@@ -114,7 +114,7 @@ export function StorefrontFooter({
               </li>
               <li>
                 <Link
-                  href="/faq#order-tracking"
+                  href="/track"
                   className="text-alabaster/80 hover:text-alabaster transition-colors"
                 >
                   Track Your Order

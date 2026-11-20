@@ -18,11 +18,13 @@ export interface CartItem {
 
 interface CartState {
   items: CartItem[];
+  promoCode: string | null;
   isOpen: boolean;
   lastAddedNotice: string | null;
   addItem: (item: Omit<CartItem, "quantity">, quantity?: number) => void;
   removeItem: (variantId: string) => void;
   updateQuantity: (variantId: string, quantity: number) => void;
+  setPromoCode: (code: string | null) => void;
   clearCart: () => void;
   openCart: () => void;
   closeCart: () => void;
@@ -33,6 +35,7 @@ export const useCartStore = create<CartState>()(
   persist(
     (set) => ({
       items: [],
+      promoCode: null,
       isOpen: false,
       lastAddedNotice: null,
 
@@ -89,14 +92,15 @@ export const useCartStore = create<CartState>()(
           };
         }),
 
-      clearCart: () => set({ items: [] }),
+      setPromoCode: (code) => set({ promoCode: code }),
+      clearCart: () => set({ items: [], promoCode: null }),
       openCart: () => set({ isOpen: true }),
       closeCart: () => set({ isOpen: false }),
       clearNotice: () => set({ lastAddedNotice: null }),
     }),
     {
       name: "rostvyn-cart-v1",
-      partialize: (state) => ({ items: state.items }),
+      partialize: (state) => ({ items: state.items, promoCode: state.promoCode }),
     }
   )
 );

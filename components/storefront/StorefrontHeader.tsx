@@ -11,11 +11,9 @@ import {
   ShoppingBag,
   X,
   Check,
-  Trash2,
 } from "lucide-react";
 import type { PublicStoreSettings, SerializedCategory } from "@/lib/storefront";
 import { useCartStore } from "@/store/cartStore";
-import { formatCurrency } from "@/lib/utils";
 
 interface StorefrontHeaderProps {
   settings: PublicStoreSettings;
@@ -28,10 +26,7 @@ export function StorefrontHeader({
 }: StorefrontHeaderProps) {
   const router = useRouter();
   const items = useCartStore((s) => s.items);
-  const isOpen = useCartStore((s) => s.isOpen);
   const openCart = useCartStore((s) => s.openCart);
-  const closeCart = useCartStore((s) => s.closeCart);
-  const removeItem = useCartStore((s) => s.removeItem);
   const lastAddedNotice = useCartStore((s) => s.lastAddedNotice);
   const clearNotice = useCartStore((s) => s.clearNotice);
 
@@ -57,18 +52,14 @@ export function StorefrontHeader({
         setSearchOpen(false);
         setMobileMenuOpen(false);
         setShopDropdownOpen(false);
-        closeCart();
       }
     }
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [closeCart]);
+  }, []);
 
   const totalItems = mounted
     ? items.reduce((sum, item) => sum + item.quantity, 0)
-    : 0;
-  const subtotal = mounted
-    ? items.reduce((sum, item) => sum + item.price * item.quantity, 0)
     : 0;
 
   function handleSearchSubmit(e: FormEvent<HTMLFormElement>) {
@@ -196,7 +187,7 @@ export function StorefrontHeader({
             {/* Right Utility Icons */}
             <div className="flex items-center gap-3 sm:gap-5">
               <Link
-                href="/faq#order-tracking"
+                href="/track"
                 className="hidden md:inline-block text-xs uppercase tracking-[0.14em] text-muted hover:text-espresso transition-colors"
               >
                 Track Order
@@ -339,6 +330,7 @@ export function StorefrontHeader({
                   { href: "/bundles", label: "Bundles & Gift Sets" },
                   { href: "/brew-guide", label: "Brewing & Grind Guide" },
                   { href: "/our-story", label: "Our Roastery Story" },
+                  { href: "/track", label: "Track Order" },
                   { href: "/faq", label: "Help & FAQs" },
                   { href: "/contact", label: "Contact & Wholesale" },
                 ].map((link) => (
@@ -359,117 +351,6 @@ export function StorefrontHeader({
               {settings.contactPhone && <p>{settings.contactPhone}</p>}
             </div>
           </div>
-        </div>
-      )}
-
-      {/* Lightweight Bag Preview Panel (Full Slide-Over Cart & Checkout arrive in Phase 3) */}
-      {isOpen && (
-        <div className="fixed inset-0 z-50 flex justify-end">
-          <div
-            className="fixed inset-0 bg-espresso/40 backdrop-blur-xs"
-            onClick={closeCart}
-          />
-          <aside
-            aria-label="Shopping bag preview"
-            className="relative w-full max-w-md bg-alabaster h-full border-l border-stone-border flex flex-col justify-between p-6 overflow-y-auto shadow-2xl"
-          >
-            <div>
-              <div className="flex items-center justify-between pb-5 border-b border-stone-border">
-                <h2 className="font-serif text-2xl font-medium text-espresso">
-                  Your Bag ({totalItems})
-                </h2>
-                <button
-                  type="button"
-                  onClick={closeCart}
-                  aria-label="Close bag"
-                  className="p-1.5 text-espresso hover:text-terracotta cursor-pointer"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
-
-              {items.length === 0 ? (
-                <div className="py-16 text-center">
-                  <ShoppingBag className="h-8 w-8 text-muted mx-auto mb-3" strokeWidth={1.5} />
-                  <p className="text-sm text-muted mb-6">
-                    Your roasting bag is currently empty.
-                  </p>
-                  <Link
-                    href="/shop"
-                    onClick={closeCart}
-                    className="inline-block bg-espresso text-alabaster px-6 py-3 text-xs uppercase tracking-[0.16em] hover:bg-roast transition-colors"
-                  >
-                    Explore Fresh Roasts
-                  </Link>
-                </div>
-              ) : (
-                <ul className="divide-y divide-stone-border mt-2">
-                  {items.map((item) => (
-                    <li key={item.variantId} className="py-4 flex gap-4">
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="h-20 w-16 object-cover bg-linen shrink-0"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-2">
-                          <Link
-                            href={`/product/${item.slug}`}
-                            onClick={closeCart}
-                            className="font-serif text-base font-medium text-espresso hover:text-terracotta truncate"
-                          >
-                            {item.name}
-                          </Link>
-                          <button
-                            type="button"
-                            onClick={() => removeItem(item.variantId)}
-                            aria-label={`Remove ${item.name}`}
-                            className="text-muted hover:text-rust cursor-pointer"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                        </div>
-                        <p className="text-xs text-muted mt-0.5">
-                          {item.variantName}
-                        </p>
-                        <div className="flex items-center justify-between mt-3 text-xs">
-                          <span className="text-roast">Qty: {item.quantity}</span>
-                          <span className="font-medium text-espresso">
-                            {formatCurrency(
-                              item.price * item.quantity,
-                              settings.currencyCode
-                            )}
-                          </span>
-                        </div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-
-            {items.length > 0 && (
-              <div className="pt-5 border-t border-stone-border space-y-4">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted">Estimated Subtotal</span>
-                  <span className="font-semibold text-espresso">
-                    {formatCurrency(subtotal, settings.currencyCode)}
-                  </span>
-                </div>
-                <p className="text-xs text-muted">
-                  {subtotal >= settings.freeShippingThreshold
-                    ? "You qualify for complimentary tracked delivery."
-                    : `Add ${formatCurrency(
-                        settings.freeShippingThreshold - subtotal,
-                        settings.currencyCode
-                      )} more for complimentary delivery.`}
-                </p>
-                <div className="bg-linen border border-stone-border px-4 py-3 text-xs text-roast">
-                  Full Cart Page &amp; Guest Checkout flow arrive in Phase 3.
-                </div>
-              </div>
-            )}
-          </aside>
         </div>
       )}
     </>
