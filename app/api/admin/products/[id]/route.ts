@@ -209,7 +209,7 @@ export async function PATCH(
         where: { id },
         include: { variants: { orderBy: { createdAt: "asc" } } },
       });
-    });
+    }, { maxWait: 10000, timeout: 15000 });
 
     if (!updated) {
       return NextResponse.json({ error: "Product not found." }, { status: 404 });

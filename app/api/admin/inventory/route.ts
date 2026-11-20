@@ -158,7 +158,7 @@ export async function PATCH(request: Request) {
       });
 
       return { variant: updated, log };
-    });
+    }, { maxWait: 10000, timeout: 15000 });
 
     if ("error" in result) {
       return NextResponse.json(

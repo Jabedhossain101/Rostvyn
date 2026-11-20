@@ -111,24 +111,23 @@ export async function POST(request: Request) {
       ([variantId, quantity]) => ({ variantId, quantity })
     );
 
-    const result = await prisma.$transaction(async (tx) => {
-      // 1. Fetch StoreSettings
-      const settings = await tx.storeSettings.findUnique({
-        where: { id: "default" },
-      });
+    const result = await prisma.$transaction(
+      async (tx) => {
+        // 1 & 2. Fetch StoreSettings + requested variants in parallel to minimize round-trips
+        const variantIds = normalizedItems.map((i) => i.variantId);
+        const [settings, variants] = await Promise.all([
+          tx.storeSettings.findUnique({ where: { id: "default" } }),
+          tx.productVariant.findMany({
+            where: { id: { in: variantIds } },
+            include: { product: true },
+          }),
+        ]);
 
-      const metroFee = settings ? Number(settings.metroDeliveryFee) : 5;
-      const nationalFee = settings ? Number(settings.nationalDeliveryFee) : 12;
-      const freeShippingThreshold = settings
-        ? Number(settings.freeShippingThreshold)
-        : 45;
-
-      // 2. Fetch all requested variants + parent products
-      const variantIds = normalizedItems.map((i) => i.variantId);
-      const variants = await tx.productVariant.findMany({
-        where: { id: { in: variantIds } },
-        include: { product: true },
-      });
+        const metroFee = settings ? Number(settings.metroDeliveryFee) : 5;
+        const nationalFee = settings ? Number(settings.nationalDeliveryFee) : 12;
+        const freeShippingThreshold = settings
+          ? Number(settings.freeShippingThreshold)
+          : 45;
 
       const variantById = new Map(variants.map((v) => [v.id, v]));
 
@@ -315,11 +314,13 @@ export async function POST(request: Request) {
         },
       });
 
-      return {
-        orderRef: order.orderRef,
-        totalAmount: Number(order.totalAmount),
-      };
-    });
+        return {
+          orderRef: order.orderRef,
+          totalAmount: Number(order.totalAmount),
+        };
+      },
+      { maxWait: 10000, timeout: 15000 }
+    );
 
     return NextResponse.json(result, { status: 201 });
   } catch (error) {

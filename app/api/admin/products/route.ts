@@ -167,7 +167,7 @@ export async function POST(request: Request) {
       }
 
       return created;
-    });
+    }, { maxWait: 10000, timeout: 15000 });
 
     return NextResponse.json({ id: product.id, slug: product.slug }, { status: 201 });
   } catch (error) {

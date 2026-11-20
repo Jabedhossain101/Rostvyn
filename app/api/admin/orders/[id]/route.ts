@@ -184,7 +184,7 @@ export async function PATCH(
 
       const fresh = await tx.order.findUnique({ where: { id } });
       return { order: fresh, stockRestoredNow: shouldRestoreStock };
-    });
+    }, { maxWait: 10000, timeout: 15000 });
 
     if (!updated || !updated.order) {
       return NextResponse.json({ error: "Order not found." }, { status: 404 });
