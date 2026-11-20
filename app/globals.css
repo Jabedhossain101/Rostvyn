@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+:root {
+  --bg-alabaster: #FAF8F5;
+  --bg-linen: #F3EFEA;
+  --text-espresso: #1C1917;
+  --text-roast: #292524;
+  --text-muted: #78716C;
+  --accent-terracotta: #B45309;
+  --accent-rust: #C2410C;
+  --border-stone: #E7E5E4;
+  --surface-card: #FFFFFF;
+}
+
+@theme inline {
+  --color-alabaster: var(--bg-alabaster);
+  --color-linen: var(--bg-linen);
+  --color-espresso: var(--text-espresso);
+  --color-roast: var(--text-roast);
+  --color-muted: var(--text-muted);
+  --color-terracotta: var(--accent-terracotta);
+  --color-rust: var(--accent-rust);
+  --color-stone-border: var(--border-stone);
+  --color-surface: var(--surface-card);
+
+  --font-serif: var(--font-cormorant), "Georgia", serif;
+  --font-sans: var(--font-jakarta), system-ui, -apple-system, sans-serif;
+}
+
+@layer base {
+  html {
+    background-color: var(--bg-alabaster);
+    color: var(--text-espresso);
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--bg-alabaster);
+    color: var(--text-espresso);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-serif);
+    color: var(--text-espresso);
+    letter-spacing: -0.015em;
+  }
+
+  ::selection {
+    background-color: #B45309;
+    color: #FAF8F5;
+  }
+}
