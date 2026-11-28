@@ -12,13 +12,17 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("Seeding Rostvyn database...");
 
-  // 1. Admin Users (idempotent)
-  const superAdminHash = await bcrypt.hash("RostvynAdmin!2026", 12);
+  // 1. Admin Users (idempotent — guarantees demo Super Admin credentials stay synced)
+  const superAdminHash = await bcrypt.hash("RostvynAdmin@2026", 12);
   const staffHash = await bcrypt.hash("RostvynStaff!2026", 12);
 
   const superAdmin = await prisma.adminUser.upsert({
     where: { email: "admin@rostvyn.com" },
-    update: {},
+    update: {
+      passwordHash: superAdminHash,
+      role: AdminRole.SUPER_ADMIN,
+      isActive: true,
+    },
     create: {
       name: "Elena Vance",
       email: "admin@rostvyn.com",
@@ -436,7 +440,7 @@ async function main() {
   }
 
   console.log(
-    `Seed complete. Super Admin ready: ${superAdmin.email} (password: RostvynAdmin!2026)`
+    `Seed complete. Super Admin ready: ${superAdmin.email} (password: RostvynAdmin@2026)`
   );
 }
 

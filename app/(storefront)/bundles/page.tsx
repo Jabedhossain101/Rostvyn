@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { ArrowRight, Gift, Sparkles, Truck } from "lucide-react";
+import { ArrowRight, Award, Gift, Truck } from "lucide-react";
 import { getPublicSettings, queryProducts } from "@/lib/storefront";
 import { ProductCard } from "@/components/storefront/ProductCard";
 import { formatCurrency } from "@/lib/utils";
@@ -48,7 +48,7 @@ export default async function BundlesPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-14">
             {[
               {
-                icon: Sparkles,
+                icon: Award,
                 title: "Save Up to 16%",
                 body: "Automatic bundle pricing compared to purchasing individual bags and gear.",
               },

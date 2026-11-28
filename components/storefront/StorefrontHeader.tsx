@@ -8,6 +8,7 @@ import {
   Coffee,
   Menu,
   Search,
+  ShieldCheck,
   ShoppingBag,
   X,
   Check,
@@ -185,12 +186,20 @@ export function StorefrontHeader({
             </nav>
 
             {/* Right Utility Icons */}
-            <div className="flex items-center gap-3 sm:gap-5">
+            <div className="flex items-center gap-2.5 sm:gap-4">
               <Link
                 href="/track"
                 className="hidden md:inline-block text-xs uppercase tracking-[0.14em] text-muted hover:text-espresso transition-colors"
               >
                 Track Order
+              </Link>
+
+              <Link
+                href="/admin/login"
+                className="hidden sm:inline-flex items-center gap-1.5 border border-stone-border bg-linen/80 px-3 py-1.5 text-[11px] uppercase tracking-[0.14em] text-roast hover:border-terracotta hover:text-terracotta transition-colors"
+              >
+                <ShieldCheck className="h-3.5 w-3.5 text-terracotta" />
+                Admin Demo
               </Link>
 
               <button
@@ -343,6 +352,17 @@ export function StorefrontHeader({
                     {link.label}
                   </Link>
                 ))}
+
+                <div className="pt-4 mt-3 border-t border-stone-border">
+                  <Link
+                    href="/admin/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="inline-flex w-full items-center justify-center gap-2 border border-stone-border bg-linen px-4 py-2.5 text-xs uppercase tracking-[0.16em] text-espresso hover:border-terracotta hover:text-terracotta transition-colors"
+                  >
+                    <ShieldCheck className="h-4 w-4 text-terracotta" />
+                    Admin Demo
+                  </Link>
+                </div>
               </nav>
             </div>
 

@@ -4,6 +4,7 @@ import { SESSION_COOKIE_NAME, verifyAdminToken } from "@/lib/auth";
 const PUBLIC_ADMIN_PATHS = ["/admin/login"];
 const PUBLIC_ADMIN_API_PATHS = [
   "/api/admin/auth/login",
+  "/api/admin/auth/register",
   "/api/admin/auth/logout",
 ];
 

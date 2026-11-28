@@ -136,6 +136,14 @@ export function StorefrontFooter({
                   Contact &amp; Wholesale
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/admin/login"
+                  className="text-terracotta hover:text-alabaster transition-colors font-medium"
+                >
+                  Admin Portal / Demo Login
+                </Link>
+              </li>
             </ul>
           </div>
 
